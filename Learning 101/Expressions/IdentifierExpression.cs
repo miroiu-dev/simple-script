@@ -2,8 +2,12 @@
 {
     public Token Value { get; set; }
 
-    public IExpression Accept(ExpressionVisitor visitor)
+    public IExpression Accept(IExpressionVisitor visitor)
     {
         return visitor.VisitIdentifierExpression(this);
+    }
+    public override string ToString()
+    {
+        return Value.Text;
     }
 }

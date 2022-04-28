@@ -5,7 +5,7 @@ class BinaryExpression : IExpression
     public IExpression RightOperand { get; set; }
     public Token Operator { get; set; }
 
-    public IExpression Accept(ExpressionVisitor visitor)
+    public IExpression Accept(IExpressionVisitor visitor)
     {
         return visitor.VisitBinaryExpression(this);
     }

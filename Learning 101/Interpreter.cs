@@ -1,8 +1,4 @@
-﻿
-//var code = Console.ReadLine();
-
-
-class Interpreter
+﻿class Interpreter
 {
     private readonly List<IExpression> _expressions;
 

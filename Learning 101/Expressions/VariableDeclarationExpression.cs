@@ -5,7 +5,7 @@ class VariableDeclarationExpression : IExpression
     public Token Identifier { get; set; }
     public IExpression Value { get; set; }
 
-    public IExpression Accept(ExpressionVisitor visitor)
+    public IExpression Accept(IExpressionVisitor visitor)
     {
         return visitor.VisitVariableDeclaration(this);
     }

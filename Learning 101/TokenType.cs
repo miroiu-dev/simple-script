@@ -13,5 +13,7 @@
     Integer,
     Asterisk,
     Slash,
-    Carret
+    Carret,
+    Str,
+    Text
 }

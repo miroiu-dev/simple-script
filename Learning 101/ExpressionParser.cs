@@ -37,10 +37,12 @@
         {
             switch (Current.Type)
             {
+                case TokenType.Str:
                 case TokenType.Num:
                     VariableDeclarationExpression varDeclaration = ParseVariableDeclaration();
                     expressions.Add(varDeclaration);
                     break;
+
                 case TokenType.Identifier:
                     FunctionCallExpression functionCall = ParseFunctionCallExpression();
                     expressions.Add(functionCall);
@@ -78,6 +80,7 @@
         {
             TokenType.Identifier => ParseIdentifierExpression(),
             TokenType.Integer => ParseConstantExpression(),
+            TokenType.Text => ParseConstantExpression(),
             TokenType.OpenBracket => ParseBracketsExpression(),
             _ => throw new Exception($"Unexpected token type: {Current.Type}"),
         };
@@ -120,13 +123,13 @@
 
     private ConstantExpression ParseConstantExpression()
     {
-        Token constant = Match(TokenType.Integer);
+        Token constant = Match(Current.Type == TokenType.Integer ? TokenType.Integer : TokenType.Text);
         return new ConstantExpression { Value = constant };
     }
 
     private VariableDeclarationExpression ParseVariableDeclaration()
     {
-        Token dataType = Match(TokenType.Num);
+        Token dataType = Match(Current.Type == TokenType.Num ? TokenType.Num : TokenType.Str);
         Token identifier = Match(TokenType.Identifier);
         Match(TokenType.Equals);
         IExpression value = ParsePrimaryExpression();

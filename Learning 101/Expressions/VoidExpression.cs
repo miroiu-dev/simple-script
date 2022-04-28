@@ -1,6 +1,6 @@
 ﻿class VoidExpression : IExpression
 {
-    public IExpression Accept(ExpressionVisitor visitor)
+    public IExpression Accept(IExpressionVisitor visitor)
     {
         return this;
     }

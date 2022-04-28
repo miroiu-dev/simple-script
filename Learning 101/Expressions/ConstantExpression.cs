@@ -2,13 +2,13 @@
 {
     public Token Value { get; set; }
 
-    public IExpression Accept(ExpressionVisitor visitor)
+    public IExpression Accept(IExpressionVisitor visitor)
     {
         return visitor.VisitConstantExpression(this);
     }
 
     public override string ToString()
     {
-        return $"{Value.Text}";
+        return Value.Type == TokenType.Text ? $"'{Value.Text}'" : $"{Value.Text}";
     }
 }

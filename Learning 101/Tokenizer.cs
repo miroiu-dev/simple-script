@@ -9,7 +9,8 @@ class Tokenizer
 
     private readonly Dictionary<string, TokenType> _reservedKeywords = new()
     {
-        ["num"] = TokenType.Num
+        ["num"] = TokenType.Num,
+        ["str"] = TokenType.Str
     };
 
     public Tokenizer(string code)
@@ -48,6 +49,24 @@ class Tokenizer
             _column++;
         }
         return int.Parse(number.ToString());
+    }
+
+    private string ReadString()
+    {
+        char endQuote = _code[_cursor];
+        _cursor++;
+        _column++;
+        StringBuilder text = new();
+        while (_code[_cursor] != endQuote)
+        {
+            if (_cursor == _code.Length - 1) throw new Exception("Unmatching quotes");
+            text.Append(_code[_cursor]);
+            _cursor++;
+            _column++;
+        }
+        _cursor++;
+        _column++;
+        return text.ToString();
     }
 
     public List<Token> Parse()
@@ -186,6 +205,11 @@ class Tokenizer
                     tokens.Add(new Token { Type = TokenType.Semicolon, Text = ";", Line = _line, Column = _column });
                     _column++;
                     _cursor++;
+                    break;
+                case '"':
+                case '\'':
+                    string text = ReadString();
+                    tokens.Add(new Token { Type = TokenType.Text, Text = text, Line = _line, Column = _column });
                     break;
                 default:
                     throw new Exception($"Character '{current}' is not supported");

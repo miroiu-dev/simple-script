@@ -1,12 +1,10 @@
-﻿string code = @"
-print 5^2 * (3 + 15/5);
-
-";
-
-//var code = Console.ReadLine();
+﻿var code = File.ReadAllText("code.ss");
 
 List<Token> tokens = new Tokenizer(code).Parse();
 
 List<IExpression> expressions = new ExpressionParser(tokens).Parse();
 Interpreter interpreter = new(expressions);
 interpreter.Evaluate();
+
+var result = CodeGenerator.Generate(expressions);
+Console.WriteLine(result);

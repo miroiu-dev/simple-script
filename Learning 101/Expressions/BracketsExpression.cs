@@ -1,7 +1,7 @@
 ﻿class BracketsExpression : IExpression
 {
     public IExpression Inner { get; set; }
-    public IExpression Accept(ExpressionVisitor visitor)
+    public IExpression Accept(IExpressionVisitor visitor)
     {
         return visitor.VisitBracketsExpression(this);
     }
