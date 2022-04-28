@@ -1,12 +1,4 @@
-﻿//string code = @"
-//num x = 5 ;
-//num y = 10 ;
-//print x + y ;
-//";
-
-
-
-class ExpressionParser
+﻿class ExpressionParser
 {
     private readonly List<Token> _tokens;
     private int _cursor = 0;
