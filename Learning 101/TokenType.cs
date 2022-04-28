@@ -10,5 +10,8 @@
     CloseBracket,
     Plus,
     Minus,
-    Integer
+    Integer,
+    Asterisk,
+    Slash,
+    Carret
 }

@@ -2,6 +2,14 @@
 {
     private readonly List<Token> _tokens;
     private int _cursor = 0;
+    private readonly Dictionary<TokenType, int> _precedence = new()
+    {
+        [TokenType.Plus] = 0,
+        [TokenType.Minus] = 0,
+        [TokenType.Slash] = 1,
+        [TokenType.Asterisk] = 1,
+        [TokenType.Carret] = 2,
+    };
 
     public Token Current => _tokens[_cursor];
 
@@ -52,17 +60,62 @@
             return ParseBinaryExpression();
         }
 
-        return ParseConstantExpression();
+        return ParseLeafExpression();
     }
 
-    private BinaryExpression ParseBinaryExpression()
+    public IExpression ParseBracketsExpression()
     {
-        Token leftOperand = Match(TokenType.Identifier);
-        Token operatorToken = Current.IsOperator ? Current : throw new Exception($"Invalid operator: {Current.Type}");
-        Next();
-        Token rightOperand = Match(TokenType.Identifier);
+        Match(TokenType.OpenBracket);
+        IExpression inner = ParseBinaryExpression();
+        Match(TokenType.CloseBracket);
 
-        return new BinaryExpression { LeftOperand = leftOperand, Operator = operatorToken, RightOperand = rightOperand };
+        return new BracketsExpression { Inner = inner };
+    }
+
+    private IExpression ParseLeafExpression()
+    {
+        return Current.Type switch
+        {
+            TokenType.Identifier => ParseIdentifierExpression(),
+            TokenType.Integer => ParseConstantExpression(),
+            TokenType.OpenBracket => ParseBracketsExpression(),
+            _ => throw new Exception($"Unexpected token type: {Current.Type}"),
+        };
+    }
+
+    private IExpression ParseBinaryExpression(int? parentPrecedence = default)
+    {
+        IExpression left = ParseLeafExpression();
+
+        while (Current.Type != TokenType.Semicolon && Current.Type != TokenType.EndOfFile)
+        {
+            if (Current.IsOperator)
+            {
+                int precedence = _precedence[Current.Type];
+                if (parentPrecedence >= precedence)
+                {
+                    return left;
+                }
+
+                Token operatorToken = Next();
+                left = new BinaryExpression { LeftOperand = left, Operator = operatorToken, RightOperand = ParseBinaryExpression(parentPrecedence: precedence) };
+            }
+            else
+            {
+                return left;
+            }
+        }
+
+        return left;
+    }
+
+    private IExpression ParseIdentifierExpression()
+    {
+        Token token = Match(TokenType.Identifier);
+        return new IdentifierExpression
+        {
+            Value = token
+        };
     }
 
     private ConstantExpression ParseConstantExpression()
@@ -76,7 +129,7 @@
         Token dataType = Match(TokenType.Num);
         Token identifier = Match(TokenType.Identifier);
         Match(TokenType.Equals);
-        Token value = Match(TokenType.Integer);
+        IExpression value = ParsePrimaryExpression();
         Match(TokenType.Semicolon);
         return new VariableDeclarationExpression { DataType = dataType, Identifier = identifier, Value = value };
     }

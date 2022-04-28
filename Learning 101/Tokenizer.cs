@@ -152,6 +152,21 @@ class Tokenizer
                     _column++;
                     _cursor++;
                     break;
+                case '*':
+                    tokens.Add(new Token { Type = TokenType.Asterisk, Text = "*", Line = _line, Column = _column, IsOperator = true });
+                    _column++;
+                    _cursor++;
+                    break;
+                case '/':
+                    tokens.Add(new Token { Type = TokenType.Slash, Text = "/", Line = _line, Column = _column, IsOperator = true });
+                    _column++;
+                    _cursor++;
+                    break;
+                case '^':
+                    tokens.Add(new Token { Type = TokenType.Carret, Text = "^", Line = _line, Column = _column, IsOperator = true });
+                    _column++;
+                    _cursor++;
+                    break;
                 case '=':
                     tokens.Add(new Token { Type = TokenType.Equals, Text = "=", Line = _line, Column = _column });
                     _column++;

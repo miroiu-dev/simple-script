@@ -3,7 +3,7 @@ class VariableDeclarationExpression : IExpression
 {
     public Token DataType { get; set; }
     public Token Identifier { get; set; }
-    public Token Value { get; set; }
+    public IExpression Value { get; set; }
 
     public IExpression Accept(ExpressionVisitor visitor)
     {
@@ -12,6 +12,6 @@ class VariableDeclarationExpression : IExpression
 
     public override string ToString()
     {
-        return $"{DataType.Text} {Identifier.Text} = {Value.Text};";
+        return $"{DataType.Text} {Identifier.Text} = {Value};";
     }
 }

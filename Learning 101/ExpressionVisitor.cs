@@ -1,30 +1,49 @@
-﻿
-//var code = Console.ReadLine();
-
-
-class ExpressionVisitor
+﻿class ExpressionVisitor
 {
-    private readonly Dictionary<string, int> _variables = new();
+    private readonly Dictionary<string, double> _variables = new();
+
+    public IExpression VisitIdentifierExpression(IdentifierExpression identifierExpression)
+    {
+        if (_variables.TryGetValue(identifierExpression.Value.Text, out double integer))
+            return new ValueExpression { Value = integer };
+
+        throw new Exception($"Variable {identifierExpression.Value} was not declared in this scope");
+    }
+
+    public IExpression VisitBracketsExpression(BracketsExpression bracketsExpression)
+    {
+        return bracketsExpression.Inner.Accept(this);
+    }
 
     public IExpression VisitVariableDeclaration(VariableDeclarationExpression variableDeclaration)
     {
-        _variables.Add(variableDeclaration.Identifier.Text, int.Parse(variableDeclaration.Value.Text));
+        ValueExpression value = (ValueExpression)variableDeclaration.Value.Accept(this);
+        _variables.Add(variableDeclaration.Identifier.Text, value.Value);
         return new VoidExpression();
     }
 
     public IExpression VisitBinaryExpression(BinaryExpression binaryExpression)
     {
-        Token leftOperand = binaryExpression.LeftOperand;
-        Token rightOperand = binaryExpression.RightOperand;
+        ValueExpression leftOperand = (ValueExpression)binaryExpression.LeftOperand.Accept(this);
+        ValueExpression rightOperand = (ValueExpression)binaryExpression.RightOperand.Accept(this);
 
         switch (binaryExpression.Operator.Type)
         {
             case TokenType.Plus:
-                int sum = _variables[leftOperand.Text] + _variables[rightOperand.Text];
+                double sum = leftOperand.Value + rightOperand.Value;
                 return new ValueExpression { Value = sum };
             case TokenType.Minus:
-                int diff = _variables[leftOperand.Text] - _variables[rightOperand.Text];
+                double diff = leftOperand.Value - rightOperand.Value;
                 return new ValueExpression { Value = diff };
+            case TokenType.Asterisk:
+                double product = leftOperand.Value * rightOperand.Value;
+                return new ValueExpression { Value = product };
+            case TokenType.Slash:
+                double division = leftOperand.Value / rightOperand.Value;
+                return new ValueExpression { Value = division };
+            case TokenType.Carret:
+                double power = (int)Math.Pow(leftOperand.Value, rightOperand.Value);
+                return new ValueExpression { Value = power };
             default:
                 throw new Exception($"Operator Type: {binaryExpression.Operator.Type} Not Implemented");
         }
