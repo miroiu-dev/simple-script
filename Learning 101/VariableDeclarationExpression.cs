@@ -12,6 +12,6 @@ class VariableDeclarationExpression : IExpression
 
     public override string ToString()
     {
-        return $"{DataType.Value} {Identifier.Value} = {Value.Value};";
+        return $"{DataType.Text} {Identifier.Text} = {Value.Text};";
     }
 }

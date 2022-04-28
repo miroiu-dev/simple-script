@@ -4,4 +4,9 @@
     {
         return this;
     }
+
+    public override string ToString()
+    {
+        return string.Empty;
+    }
 }

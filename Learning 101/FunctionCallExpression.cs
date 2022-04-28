@@ -11,6 +11,6 @@ class FunctionCallExpression : IExpression
 
     public override string ToString()
     {
-        return $"{Identifier.Value} {ParameterExpression};";
+        return $"{Identifier.Text} {ParameterExpression};";
     }
 }

@@ -12,6 +12,6 @@ class BinaryExpression : IExpression
 
     public override string ToString()
     {
-        return $"{LeftOperand.Value} {Operator.Value} {RightOperand.Value}";
+        return $"{LeftOperand.Text} {Operator.Text} {RightOperand.Text}";
     }
 }
